@@ -4,12 +4,12 @@ import 'package:training/components/user_tile.dart';
 import 'package:training/pages/chat_page.dart';
 import 'package:training/services/auth/auth_service.dart';
 import 'package:training/services/chat/chat_service.dart';
-//import 'package:percent_indicator/percent_indicator.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
   final ChatService _chatService = ChatService();
+
   final AuthService _authService = AuthService();
 
   @override
@@ -46,10 +46,14 @@ class MyHomePage extends StatelessWidget {
 
   Widget _buildUserListItem(
       Map<String, dynamic> userData, BuildContext context) {
+    String displayText =
+        userData.containsKey('username') && userData['username'] != null
+            ? userData['username']
+            : userData['email'];
     var currentUser = _authService.getCurrentUser();
     if (currentUser != null && userData["email"] != currentUser.email) {
       return UserTile(
-        text: userData["email"],
+        text: displayText,
         onTap: () {
           Navigator.push(
             context,
@@ -57,6 +61,7 @@ class MyHomePage extends StatelessWidget {
               builder: (context) => ChatPage(
                 recieverEmail: userData["email"],
                 recieverID: userData["uid"],
+                receiverUsername: displayText,
               ),
             ),
           );
@@ -67,85 +72,3 @@ class MyHomePage extends StatelessWidget {
     }
   }
 }
-
-//Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context){
-  //return UserTile()
-//}
-/*
-  Container graph() {
-    return Container(
-            child: Column(
-              children: [
-                const Text('kokot'),
-                const SizedBox(
-                  height: 20,
-                ),
-                CircularPercentIndicator(
-                  radius: 100,
-                  lineWidth: 10,
-                  percent: 0.8,
-                  center: SizedBox(
-                    child: new Image.asset('assets/logo.webp'),
-                    width: 100,
-                    height: 100,
-                    ),
-                  backgroundColor: Colors.blue,
-                  progressColor: Colors.green,
-                  
-                  )
-              ],
-            )
-          );
-  }*/
-/*
-  Container header() {
-    return Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            alignment: Alignment.bottomCenter,
-            height: 170,
-            decoration: const BoxDecoration(color: Colors.blue),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                          "Welcome",
-                          style: TextStyle(
-                            fontSize: 26,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    Text(
-                      "User",
-                        style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.white,
-                          ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(child: Image.asset('assets/logo.webp'),width: 100,),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      child: IconButton(
-                        onPressed: logout,
-                        icon: const Icon(Icons.settings, size: 25, color: Colors.white,), 
-                        ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          );
-  }
-}*/

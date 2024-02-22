@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthService{
+class AuthService {
   //instance of auth
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -9,32 +9,35 @@ class AuthService{
   User? getCurrentUser() {
     return _auth.currentUser;
   }
-  // sign in
-  Future<UserCredential> signInWithEmailPassword(String email, password) async{
-    try{
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-        _firestore.collection("Users").doc(userCredential.user!.uid).set({
+  // sign in
+  Future<UserCredential> signInWithEmailPassword(String email, password) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      _firestore.collection("Users").doc(userCredential.user!.uid).set({
         'uid': userCredential.user!.uid,
         'email': email,
-
       });
 
       return userCredential;
-    }on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
+
   //sign out
-  Future<void> signOut()async {
+  Future<void> signOut() async {
     return await _auth.signOut();
   }
 
   //register
- Future<UserCredential?> signUpWithEmailPassword(String email, String password) async {
+  Future<UserCredential?> signUpWithEmailPassword(
+      String email, String password) async {
     try {
-
-      final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      final UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -42,7 +45,6 @@ class AuthService{
       _firestore.collection("Users").doc(userCredential.user!.uid).set({
         'uid': userCredential.user!.uid,
         'email': email,
-
       });
 
       return userCredential;
@@ -51,4 +53,5 @@ class AuthService{
       return null;
     }
   }
+  // get username
 }

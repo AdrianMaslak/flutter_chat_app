@@ -4,12 +4,16 @@ import 'package:training/components/bubble.dart';
 import 'package:training/components/text_field.dart';
 import 'package:training/services/auth/auth_service.dart';
 import 'package:training/services/chat/chat_service.dart';
-import 'package:training/services/auth/user_service.dart';
 
 class ChatPage extends StatefulWidget {
   final String recieverEmail;
   final String recieverID;
-  ChatPage({super.key, required this.recieverEmail, required this.recieverID});
+  final String? receiverUsername;
+  ChatPage(
+      {super.key,
+      required this.recieverEmail,
+      required this.recieverID,
+      this.receiverUsername});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -19,10 +23,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
 
   final ChatService _chatService = ChatService();
-
   final AuthService _authService = AuthService();
-
-  final UserService _userService = UserService();
 
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
@@ -36,7 +37,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.recieverEmail),
+        title: Text(widget.receiverUsername ?? widget.recieverEmail),
       ),
       body: Column(
         children: [
