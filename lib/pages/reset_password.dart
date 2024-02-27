@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:training/components/text_field.dart';
-import 'package:training/components/button.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -19,73 +18,27 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     super.dispose();
   }
 
-  Future<void> passwordReset() async {
-    final String email = _emailController.text.trim();
-
-    if (email.isEmpty) {
-      // If the email field is empty, show a dialog.
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text('Please enter your email address.'),
-          );
-        },
-      );
-      return;
-    }
-
+  Future passwordReset() async {
     try {
-      // Check if the user exists before sending a password reset email.
-      final List<String> userSignInMethods =
-          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-
-      if (userSignInMethods.isNotEmpty) {
-        // The user exists, send a password reset email.
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-        showDialog(
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailController.text.trim());
+      showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              title: Text('Password Reset'),
-              content: Text('A password reset link has been sent to $email.'),
+            return const AlertDialog(
+              title: Text('Sucess'),
             );
-          },
-        );
-      } else {
-        // No user associated with the given email, show a dialog.
-        showDialog(
+          });
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: Text('Error'),
-              content: Text('No user found with that email address.'),
+              content: Text(e.message.toString()),
             );
-          },
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      // Handle Firebase Auth exceptions
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text(e.message.toString()),
-          );
-        },
-      );
-    } catch (e) {
-      // Handle any other exceptions
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text(e.toString()),
-          );
-        },
-      );
+          });
     }
   }
 
@@ -116,7 +69,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             controller: _emailController,
           ),
           const SizedBox(height: 30),
-          MyButton(text: "Reset password", onTap: passwordReset)
+          ElevatedButton(
+              onPressed: passwordReset, child: Text('Reset password'))
         ],
       ),
     );
