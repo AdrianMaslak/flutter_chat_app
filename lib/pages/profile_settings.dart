@@ -56,6 +56,16 @@ class _ProfileSettingsPageState extends State<ProfilePage> {
             onPressed: _saveUsername,
             child: const Text('Save'),
           ),
+          const SizedBox(height: 16),
+          Column(
+            children: [
+              Text(
+                'PHOTO',
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
         ],
       ),
     );
